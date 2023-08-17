@@ -33,6 +33,13 @@ public class SampleReducer {
         }
         sample = new ArrayList<>(sample);
         final int n = sample.get(0).size();
+        //        int largestSampleSize = 0;
+        //        for(BooleanSolution config : sample) {
+        //        	if (config.size() > largestSampleSize) {
+        //        		largestSampleSize = config.size();
+        //        	}
+        //        }
+        //        final int n = largestSampleSize;
         int t2 = (n < t) ? n : t;
         final int pow = (int) Math.pow(2, t2);
         final int configLength = sample.size();

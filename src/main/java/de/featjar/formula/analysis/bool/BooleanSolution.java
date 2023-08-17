@@ -104,16 +104,6 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     }
 
     @Override
-    public int size() {
-        return countPositives() + countNegatives();
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return size() == 0;
-    }
-
-    @Override
     public Result<ValueSolution> toValue(VariableMap variableMap) {
         return variableMap.toValue(this);
     }
