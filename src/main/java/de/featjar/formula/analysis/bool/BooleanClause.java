@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.analysis.bool;
 
@@ -38,7 +38,7 @@ import java.util.*;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanClause extends ABooleanAssignment implements IClause<Integer> {
+public class BooleanClause extends ABooleanAssignment implements IClause<Integer, Boolean> {
     public BooleanClause(int... integers) {
         this(integers, true);
         assert Arrays.stream(integers).noneMatch(a -> a == 0) : "contains zero: " + Arrays.toString(integers);
@@ -142,5 +142,10 @@ public class BooleanClause extends ABooleanAssignment implements IClause<Integer
     @Override
     public String toString() {
         return String.format("BooleanClause[%s]", print());
+    }
+
+    @Override
+    public BooleanClause toClause() {
+        return this;
     }
 }

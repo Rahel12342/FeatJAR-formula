@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.analysis.bool;
 
@@ -63,5 +63,10 @@ public class BooleanAssignment extends ABooleanAssignment {
     @Override
     public String toString() {
         return String.format("BooleanAssignment[%s]", print());
+    }
+
+    @Override
+    public BooleanAssignment toAssignment() {
+        return this;
     }
 }

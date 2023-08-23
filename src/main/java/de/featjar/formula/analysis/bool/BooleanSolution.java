@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.analysis.bool;
 
@@ -29,28 +29,41 @@ import de.featjar.formula.analysis.value.ValueSolution;
 import java.util.*;
 
 /**
- * A (partial) Boolean solution; that is, a conjunction of literals.
- * Implemented as a sorted list of indices.
- * Often holds output of a SAT {@link ISolver}.
- * Indices are ordered such that the array index {@code i - 1} either holds {@code -i}, {@code 0}, or {@code i}.
- * That is, the largest occurring index mandates the minimum length of the underlying array.
- * The same index may not occur multiple times, but indices may be 0 for partial solutions.
+ * A (partial) Boolean solution; that is, a conjunction of literals. Implemented
+ * as a sorted list of indices. Often holds output of a SAT {@link ISolver}.
+ * Indices are ordered such that the array index {@code i - 1} either holds
+ * {@code -i}, {@code 0}, or {@code i}. That is, the largest occurring index
+ * mandates the minimum length of the underlying array. The same index may not
+ * occur multiple times, but indices may be 0 for partial solutions.
  *
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public class BooleanSolution extends ABooleanAssignment implements ISolution<Integer> {
+public class BooleanSolution extends ABooleanAssignment implements ISolution<Integer, Boolean> {
     public BooleanSolution(int... integers) {
         this(integers, true);
     }
 
     public BooleanSolution(int[] integers, boolean sort) {
         super(integers);
+        assert Arrays.stream(integers)
+                                .map(Math::abs) //
+                                .max()
+                                .getAsInt()
+                        <= integers.length //
+                : "max index is larger than number of elements" + Arrays.toString(integers);
+        assert sort
+                        || Arrays.stream(integers)
+                                        .map(Math::abs) //
+                                        .reduce(0, (a, b) -> b == 0 ? a + 1 : a + 1 == b ? b : -2)
+                                == integers.length
+                : "unsorted: " + Arrays.toString(integers);
         if (sort) sort();
     }
 
     public BooleanSolution(Collection<Integer> integers) {
         super(integers);
+        assert integers.stream().mapToInt(a -> a).map(Math::abs).max().getAsInt() == integers.size();
         sort();
     }
 
@@ -121,5 +134,10 @@ public class BooleanSolution extends ABooleanAssignment implements ISolution<Int
     @Override
     public String toString() {
         return String.format("BooleanSolution[%s]", print());
+    }
+
+    @Override
+    public BooleanSolution toSolution() {
+        return this;
     }
 }

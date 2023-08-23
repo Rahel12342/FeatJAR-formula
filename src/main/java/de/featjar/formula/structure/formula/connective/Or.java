@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.structure.formula.connective;
 
@@ -49,10 +49,12 @@ public class Or extends ANonTerminalExpression implements IConnective {
 
     @Override
     public Object evaluate(List<?> values) {
-        if (values.stream().anyMatch(v -> v == Boolean.TRUE)) {
+        if (values.stream().anyMatch(v -> Boolean.TRUE.equals(v))) {
             return Boolean.TRUE;
         }
-        return values.stream().filter(v -> v == Boolean.FALSE).count() == getChildrenCount() ? Boolean.FALSE : null;
+        return values.stream().filter(v -> Boolean.FALSE.equals(v)).count() == getChildrenCount()
+                ? Boolean.FALSE
+                : null;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.structure;
 
@@ -31,8 +31,7 @@ class ExpressionsTest {
     @Test
     void _true() {
         assertEquals("true", True.toString());
-        // TODO: this throws because the serializer does not support it yet, it should not throw!
-        assertThrows(ClassCastException.class, () -> assertEquals("", True.printParseable()));
+        assertEquals("true", True.printParseable());
         assertTrue((Boolean) True.evaluate());
         assertTrue((Boolean) or(literal("x"), True).evaluate());
         assertNull(and(literal("x"), True).evaluate());
@@ -41,8 +40,7 @@ class ExpressionsTest {
     @Test
     void _false() {
         assertEquals("false", False.toString());
-        // TODO: this throws because the serializer does not support it yet, it should not throw!
-        assertThrows(ClassCastException.class, () -> assertEquals("", False.printParseable()));
+        assertEquals("false", False.printParseable());
         assertFalse((Boolean) False.evaluate());
         assertFalse((Boolean) and(literal("x"), False).evaluate());
         assertNull(or(literal("x"), False).evaluate());
@@ -52,7 +50,7 @@ class ExpressionsTest {
     void andOrNotLiteral() {
         And and = and(literal("x"), or(literal("y"), not(literal("x"))));
         assertEquals("and(+, or)", and.toString());
-        assertEquals("x & (y | -x)", and.printParseable());
+        assertEquals("x (y x-)|&", and.printParseable());
         assertFalse((Boolean) and.evaluate(new ValueAssignment("x", false)));
         assertNull(and.evaluate(new ValueAssignment("x", true)));
         assertTrue((Boolean) and.evaluate(new ValueAssignment("x", true, "y", true)));

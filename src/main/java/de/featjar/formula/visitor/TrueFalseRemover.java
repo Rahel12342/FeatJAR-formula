@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.visitor;
 
@@ -50,12 +50,12 @@ public class TrueFalseRemover implements ITreeVisitor<IFormula, Void> {
 
     @Override
     public Result<Void> nodeValidator(List<IFormula> path) {
-        return rootValidator(path, root -> root instanceof Reference, "expected formula reference");
+        return ITreeVisitor.rootValidator(path, root -> root instanceof Reference, "expected formula reference");
     }
 
     @Override
     public TraversalAction firstVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         if (formula instanceof IPredicate) {
             return TraversalAction.SKIP_CHILDREN;
         } else if (formula instanceof IConnective) {
@@ -67,7 +67,7 @@ public class TrueFalseRemover implements ITreeVisitor<IFormula, Void> {
 
     @Override
     public TraversalAction lastVisit(List<IFormula> path) {
-        final IFormula formula = getCurrentNode(path);
+        final IFormula formula = ITreeVisitor.getCurrentNode(path);
         formula.replaceChildren(c -> c.equals(Expressions.False)
                 ? new And(new Literal(variable), new Literal(false, variable))
                 : c.equals(Expressions.True) ? new Or(new Literal(variable), new Literal(false, variable)) : null);

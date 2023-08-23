@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,53 +16,35 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
-package de.featjar.formula.io;
+package de.featjar.formula.test;
 
-import static de.featjar.formula.structure.Expressions.*;
+import static de.featjar.formula.structure.Expressions.and;
+import static de.featjar.formula.structure.Expressions.literal;
+import static de.featjar.formula.structure.Expressions.not;
+import static de.featjar.formula.structure.Expressions.or;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import de.featjar.base.io.format.IFormat;
-import de.featjar.formula.io.textual.ExpressionFormat;
 import de.featjar.formula.structure.formula.IFormula;
-import org.junit.jupiter.api.Test;
 
-/**
- * Tests {@link ExpressionFormat Formula} format.
- *
- * @author Sebastian Krieter
- */
-public class ExpressionFormatTest {
+public class CommonFormulas {
 
-    // @Test //TODO
-    public void Formula_ABC_nAnBnC() {
-        test("ABC-nAnBnC");
-    }
-
-    // @Test //TODO
-    public void Formula_empty() {
-        test("faulty");
-    }
-
-    @Test
-    public void Formula_nA() {
-        test("nA");
-    }
-
-    @Test
-    public void Formula_nAB() {
-        test("nAB");
-    }
-
-    private static void test(String name) {
-        FormatTest.testLoadAndSave(getFormula(name), name, (IFormat) new ExpressionFormat());
-    }
-
-    private static IFormula getFormula(String name) {
+    public static IFormula getFormula(String name) {
         switch (name) {
             case "faulty": {
                 return null;
+            }
+            case "empty": {
+                return and();
+            }
+            case "void": {
+                return and(or());
+            }
+            case "123-n1n2n3": {
+                return and(
+                        or(literal("1"), literal("2"), literal("3")),
+                        or(literal(false, "1"), literal(false, "2"), literal(false, "3")));
             }
             case "ABC-nAnBnC": {
                 return and(

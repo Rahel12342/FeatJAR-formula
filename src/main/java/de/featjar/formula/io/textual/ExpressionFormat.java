@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,20 +16,20 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.io.textual;
 
 import de.featjar.base.data.Result;
 import de.featjar.base.io.format.IFormat;
-import de.featjar.base.io.input.AInputMapper;
+import de.featjar.base.tree.Trees;
+import de.featjar.formula.io.textual.ExpressionSerializer.Notation;
 import de.featjar.formula.structure.IExpression;
 
 /**
  * Parses and serializes propositional and first-order expressions.
  *
  * @author Sebastian Krieter
- * @deprecated does not work reliably at the moment
  */
 @Deprecated
 public class ExpressionFormat implements IFormat<IExpression> {
@@ -38,23 +38,25 @@ public class ExpressionFormat implements IFormat<IExpression> {
         return "Expression";
     }
 
-    @Override
-    public boolean supportsParse() {
-        return true;
-    }
+    //    @Override
+    //    public boolean supportsParse() {
+    //        return true;
+    //    }
 
     @Override
     public boolean supportsSerialize() {
         return true;
     }
 
-    @Override
-    public Result<IExpression> parse(AInputMapper inputMapper) {
-        return new ExpressionParser().parse(inputMapper.get().read().get());
-    }
+    //    @Override
+    //    public Result<IExpression> parse(AInputMapper inputMapper) {
+    //        return new ExpressionParser().parse(inputMapper.get().read().get());
+    //    }
 
     @Override
     public Result<String> serialize(IExpression expression) {
-        return Result.of(new ExpressionSerializer().serialize(expression));
+        ExpressionSerializer serializer = new ExpressionSerializer();
+        serializer.setNotation(Notation.POSTFIX);
+        return Trees.traverse(expression, serializer);
     }
 }

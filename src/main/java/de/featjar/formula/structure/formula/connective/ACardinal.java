@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.structure.formula.connective;
 
@@ -75,7 +75,7 @@ public abstract class ACardinal extends ANonTerminalExpression implements IConne
     @Override
     public Object evaluate(List<?> values) {
         final int trueCount =
-                (int) values.stream().filter(v -> v == Boolean.TRUE).count();
+                (int) values.stream().filter(v -> Boolean.TRUE.equals(v)).count();
         final int nullCount = (int) values.stream().filter(Objects::isNull).count();
         if (!range.testLowerBound(trueCount + nullCount) || !range.testUpperBound(trueCount)) {
             return Boolean.FALSE;

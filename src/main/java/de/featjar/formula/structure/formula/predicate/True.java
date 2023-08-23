@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.structure.formula.predicate;
 
@@ -31,13 +31,9 @@ import java.util.List;
  */
 public class True extends ATerminalExpression implements IPolarPredicate {
 
-    private static final True INSTANCE = new True();
+    public static final True INSTANCE = new True();
 
     protected True() {}
-
-    public static True getInstance() {
-        return INSTANCE;
-    }
 
     @Override
     public String getName() {
@@ -56,7 +52,7 @@ public class True extends ATerminalExpression implements IPolarPredicate {
 
     @Override
     public False invert() {
-        return False.getInstance();
+        return False.INSTANCE;
     }
 
     @Override

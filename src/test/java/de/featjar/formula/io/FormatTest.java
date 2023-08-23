@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.io;
 
@@ -57,24 +57,32 @@ public class FormatTest {
 
         for (final Path file : getFileList(name, format)) {
             final IFormula expression2 = load(format, file);
-            compareFormulas(expression1, expression2);
+            compare(expression1, expression2);
         }
     }
 
-    public static void testLoadAndSave(IFormula expression1, String name, IFormat<IFormula> format) {
+    public static <T> void testSaveAndLoad(T expression1, String name, IFormat<T> format) {
         assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
         assertTrue(format.supportsParse());
         assertTrue(format.supportsSerialize());
-        final IFormula expression3 = saveAndLoad(expression1, format);
+        final T expression3 = saveAndLoad(expression1, format);
+        compare(expression1, expression3);
+    }
+
+    public static <T> void testLoadAndSave(T expression1, String name, IFormat<T> format) {
+        assertEquals(format.getClass().getCanonicalName(), format.getIdentifier());
+        assertTrue(format.supportsParse());
+        assertTrue(format.supportsSerialize());
+        final T expression3 = saveAndLoad(expression1, format);
         for (final Path file : getFileList(name, format)) {
-            final IFormula expression2 = load(format, file);
-            final IFormula expression4 = saveAndLoad(expression2, format);
-            compareFormulas(expression1, expression2);
-            compareFormulas(expression1, expression3);
-            compareFormulas(expression1, expression4);
-            compareFormulas(expression2, expression3);
-            compareFormulas(expression2, expression4);
-            compareFormulas(expression3, expression4);
+            final T expression2 = load(format, file);
+            final T expression4 = saveAndLoad(expression2, format);
+            compare(expression1, expression2);
+            compare(expression1, expression3);
+            compare(expression1, expression4);
+            compare(expression2, expression3);
+            compare(expression2, expression4);
+            compare(expression3, expression4);
         }
     }
 
@@ -82,8 +90,7 @@ public class FormatTest {
         return IO.load(path, format).get();
     }
 
-    @SuppressWarnings("resource")
-    private static List<Path> getFileList(String name, IFormat<IFormula> format) {
+    private static List<Path> getFileList(String name, IFormat<?> format) {
         final String namePattern = Pattern.quote(name) + "_\\d\\d";
         try {
             final List<Path> fileList = Files.walk(formatsDirectory.resolve(format.getName()))
@@ -101,8 +108,8 @@ public class FormatTest {
         }
     }
 
-    private static void compareFormulas(final IFormula expression1, final IFormula expression2) {
-        assertEquals(expression1, expression2, "Formulas are different");
+    private static void compare(final Object expression1, final Object expression2) {
+        assertEquals(expression1, expression2, "Objects are different");
     }
 
     private static <T> T saveAndLoad(T object, IFormat<T> format) {
@@ -112,7 +119,6 @@ public class FormatTest {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             IO.save(object, out, format);
-            out.flush();
         } catch (final IOException e) {
             e.printStackTrace();
             fail("Failed saving object: " + e.getMessage());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.analysis.combinations;
 
@@ -72,11 +72,11 @@ public final class LexicographicIterator<T>
         }
     }
 
-    public static <V> Stream<Combination<V>> stream(int t, int size) {
+    public static Stream<Combination<Void>> stream(int t, int size) {
         return StreamSupport.stream(new LexicographicIterator<>(t, size, c -> null), false);
     }
 
-    public static <V> Stream<Combination<V>> parallelStream(int t, int size) {
+    public static Stream<Combination<Void>> parallelStream(int t, int size) {
         return StreamSupport.stream(new LexicographicIterator<>(t, size, c -> null), true);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,25 +16,22 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
-package de.featjar.formula.io.dimacs;
+package de.featjar.formula.analysis.bool;
+
+import de.featjar.formula.analysis.AAssignmentSpace;
+import de.featjar.formula.analysis.VariableMap;
+import java.util.List;
 
 /**
- * Constants for the DIMACS format.
+ * Combines multiple groups of lists of {@link ABooleanAssignment assignments} with a corresponding {@link VariableMap variable map}.
  *
  * @author Sebastian Krieter
  */
-public class DIMACSConstants {
+public class BooleanAssignmentSpace extends AAssignmentSpace<ABooleanAssignment> {
 
-    /** Token leading a (single-line) comment. */
-    public static final String COMMENT = "c";
-
-    public static final String COMMENT_START = COMMENT + " ";
-    /** Token leading the problem definition. */
-    public static final String PROBLEM = "p";
-    /** Token identifying the problem type as CNF. */
-    public static final String CNF = "cnf";
-    /** Token denoting the end of a clause. */
-    public static final String CLAUSE_END = "0";
+    public BooleanAssignmentSpace(VariableMap variableMap, List<List<ABooleanAssignment>> assignment) {
+        super(variableMap, assignment);
+    }
 }

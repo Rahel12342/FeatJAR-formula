@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.analysis;
 
@@ -34,17 +34,18 @@ import java.util.stream.Stream;
  * for a first-order implementation, see {@link AValueAssignment}.
  *
  * @param <T> the index type of the variables
+ * @param <R> the value type of the variables
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public interface IAssignment<T> {
+public interface IAssignment<T, R> {
     /**
      * {@return an ordered map of all variable-value pairs in this assignment}
      * The default implementations of the other methods assume that this map is mutable.
      * If it is not, the other methods must be overridden accordingly.
      * Undefined variables (e.g., for partial assignments) are omitted.
      */
-    LinkedHashMap<T, Object> getAll();
+    LinkedHashMap<T, R> getAll();
 
     /**
      * {@return the number of variable-value pairs in this assignment}
@@ -63,7 +64,7 @@ public interface IAssignment<T> {
     /**
      * {@return a stream of variable-value pairs in this assignment}
      */
-    default Stream<Pair<T, Object>> streamValues() {
+    default Stream<Pair<T, R>> streamValues() {
         return getAll().entrySet().stream().map(Pair::of);
     }
 
@@ -72,22 +73,22 @@ public interface IAssignment<T> {
      *
      * @param variable the variable
      */
-    default Result<Object> getValue(T variable) {
+    default Result<R> getValue(T variable) {
         return Result.ofNullable(getAll().get(variable));
     }
 
     /**
      * {@return an assignment with the same contents of this assignment}
      */
-    IAssignment<T> toAssignment();
+    IAssignment<T, R> toAssignment();
 
     /**
      * {@return a clause with the same contents of this assignment}
      */
-    IClause<T> toClause();
+    IClause<T, R> toClause();
 
     /**
      * {@return a solution with the same contents of this assignment}
      */
-    ISolution<T> toSolution();
+    ISolution<T, R> toSolution();
 }

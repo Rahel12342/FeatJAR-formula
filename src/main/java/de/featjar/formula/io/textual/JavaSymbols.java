@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.base.data.Pair;
-import java.util.Arrays;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.BiImplies;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
 
 /**
  * Symbols for a representation like in Java. These are inherently incomplete
@@ -35,12 +37,10 @@ public class JavaSymbols extends Symbols {
     public static final Symbols INSTANCE = new JavaSymbols();
 
     private JavaSymbols() {
-        super(
-                Arrays.asList(
-                        new Pair<>(Operator.NOT, "!"),
-                        new Pair<>(Operator.AND, "&&"),
-                        new Pair<>(Operator.OR, "||"),
-                        new Pair<>(Operator.BIIMPLIES, "==")),
-                false);
+        super(false);
+        setSymbol(Not.class, "!");
+        setSymbol(And.class, "&&");
+        setSymbol(Or.class, "||");
+        setSymbol(BiImplies.class, "==");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,12 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.io.textual;
 
-import de.featjar.base.data.Pair;
-import java.util.Arrays;
+import de.featjar.formula.structure.formula.connective.And;
+import de.featjar.formula.structure.formula.connective.BiImplies;
+import de.featjar.formula.structure.formula.connective.Implies;
+import de.featjar.formula.structure.formula.connective.Not;
+import de.featjar.formula.structure.formula.connective.Or;
 
 /**
  * Symbols for a logical representation. These are best used for displaying to
@@ -36,13 +39,11 @@ public class LogicalSymbols extends Symbols {
     public static final Symbols INSTANCE = new LogicalSymbols();
 
     private LogicalSymbols() {
-        super(
-                Arrays.asList(
-                        new Pair<>(Operator.NOT, "\u00AC"),
-                        new Pair<>(Operator.AND, "\u2227"),
-                        new Pair<>(Operator.OR, "\u2228"),
-                        new Pair<>(Operator.IMPLIES, "\u21D2"),
-                        new Pair<>(Operator.BIIMPLIES, "\u21D4")),
-                false);
+        super(false);
+        setSymbol(Not.class, "\u00AC");
+        setSymbol(And.class, "\u2227");
+        setSymbol(Or.class, "\u2228");
+        setSymbol(Implies.class, "\u21D2");
+        setSymbol(BiImplies.class, "\u21D4");
     }
 }

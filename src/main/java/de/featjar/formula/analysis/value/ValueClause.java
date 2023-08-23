@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.analysis.value;
 
@@ -37,7 +37,7 @@ import java.util.LinkedHashMap;
  *
  * @author Elias Kuiter
  */
-public class ValueClause extends AValueAssignment implements IClause<String> {
+public class ValueClause extends AValueAssignment implements IClause<String, Object> {
     public ValueClause() {}
 
     public ValueClause(LinkedHashMap<String, Object> variableValuePairs) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.visitor;
 
@@ -65,7 +65,7 @@ public class Evaluator implements ITreeVisitor<IExpression, Object> {
 
     @Override
     public TraversalAction lastVisit(List<IExpression> path) {
-        final IExpression expression = getCurrentNode(path);
+        final IExpression expression = ITreeVisitor.getCurrentNode(path);
         if (expression instanceof Variable) {
             final Variable variable = (Variable) expression;
             final String variableName = variable.getName();

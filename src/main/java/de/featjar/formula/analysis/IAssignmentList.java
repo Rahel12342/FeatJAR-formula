@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.analysis;
 
@@ -39,7 +39,7 @@ import java.util.stream.Stream;
  * @param <T> the type of the assignment
  * @author Elias Kuiter
  */
-public interface IAssignmentList<T extends IAssignment<?>> extends Iterable<T> {
+public interface IAssignmentList<T extends IAssignment<?, ?>> extends Iterable<T> {
     /**
      * {@return a list of all assignments in this assignment list}
      * The default implementations of the other methods assume that this list is mutable.

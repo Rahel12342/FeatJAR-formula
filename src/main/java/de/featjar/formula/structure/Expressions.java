@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.structure;
 
@@ -42,11 +42,11 @@ public class Expressions {
     /**
      * A tautology.
      */
-    public static final True True = de.featjar.formula.structure.formula.predicate.True.getInstance();
+    public static final True True = de.featjar.formula.structure.formula.predicate.True.INSTANCE;
     /**
      * A contradiction.
      */
-    public static final False False = de.featjar.formula.structure.formula.predicate.False.getInstance();
+    public static final False False = de.featjar.formula.structure.formula.predicate.False.INSTANCE;
 
     /**
      * {@return a formula that evaluates to {@code true} iff all of the given formulas evaluate to {@code true}}

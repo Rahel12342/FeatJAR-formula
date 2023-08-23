@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023 Sebastian Krieter, Elias Kuiter
+ * Copyright (C) 2023 FeatJAR-Development-Team
  *
  * This file is part of FeatJAR-formula.
  *
@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with formula. If not, see <https://www.gnu.org/licenses/>.
  *
- * See <https://github.com/FeatureIDE/FeatJAR-formula> for further information.
+ * See <https://github.com/FeatJAR> for further information.
  */
 package de.featjar.formula.analysis.bool;
 
@@ -42,7 +42,8 @@ import java.util.stream.IntStream;
  * @author Sebastian Krieter
  * @author Elias Kuiter
  */
-public abstract class ABooleanAssignment extends IntegerList implements IAssignment<Integer>, IBooleanRepresentation {
+public abstract class ABooleanAssignment extends IntegerList
+        implements IAssignment<Integer, Boolean>, IBooleanRepresentation {
     public ABooleanAssignment(int... integers) {
         super(integers);
     }
@@ -163,22 +164,22 @@ public abstract class ABooleanAssignment extends IntegerList implements IAssignm
 
     @Override
     public BooleanAssignment toAssignment() {
-        return new BooleanAssignment(array);
+        return new BooleanAssignment(Arrays.copyOf(array, array.length));
     }
 
     @Override
     public BooleanClause toClause() {
-        return new BooleanClause(array);
+        return new BooleanClause(Arrays.copyOf(array, array.length));
     }
 
     @Override
     public BooleanSolution toSolution() {
-        return new BooleanSolution(array);
+        return new BooleanSolution(Arrays.copyOf(array, array.length));
     }
 
     @Override
-    public LinkedHashMap<Integer, Object> getAll() {
-        LinkedHashMap<Integer, Object> map = Maps.empty();
+    public LinkedHashMap<Integer, Boolean> getAll() {
+        LinkedHashMap<Integer, Boolean> map = Maps.empty();
         for (int integer : array) {
             if (integer > 0) map.put(integer, true);
             else if (integer < 0) map.put(-integer, false);
@@ -197,7 +198,7 @@ public abstract class ABooleanAssignment extends IntegerList implements IAssignm
     }
 
     @Override
-    public Result<Object> getValue(Integer variable) {
+    public Result<Boolean> getValue(Integer variable) {
         int index = indexOfVariable(variable);
         if (index < 0) return Result.empty();
         int value = get(index);
