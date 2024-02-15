@@ -14,295 +14,314 @@ import java.util.stream.Collectors;
 
 public class SampleReducer {
 
-	/**
-	 * Method to reduce a given set of configuration to a sample covering the same
-	 * t-wise interactions
-	 * 
-	 * @param sample the set of configuration that will be reduced
-	 * @param t
-	 * @return the reduced sample
-	 */
-	public static List<BooleanSolution> reduce(List<BooleanSolution> sample, int t) {
 
-		List<BooleanSolution> reducedSample = new ArrayList<BooleanSolution>();
-		Set<Interaction> finalInteractions = getFinalInteractions(sample, t);
+    /**
+     * Method to reduce a given set of configuration to a sample covering the same
+     * t-wise interactions
+     *
+     * @param sample the set of configuration that will be reduced
+     * @param t
+     * @return the reduced sample
+     */
+    public static List<BooleanSolution> reduce(List<BooleanSolution> sample, int t) {
 
-		int uniqueInteractions = 0;
-		for (Interaction inter : finalInteractions) {
-			if (inter.getCounter() == 1) {
-				for (int i = 0; i < sample.size(); i++) {
-					BooleanSolution config = sample.get(i);
-					if ((config.get(Math.abs(inter.getContainedFeatures().get(0)) - 1) == inter.getContainedFeatures()
-							.get(0))
-					// && (config.get(Math.abs(inter.getContainedFeatures().get(1)) - 1) == inter
-					// .getContainedFeatures().get(1))
-					) {
-						if (inter.getCounter() == 1) {
-							reducedSample.add(config);
-							sample.remove(config);
-							uniqueInteractions++;
-						}
-					}
-				}
-			}
-		}
+        List<BooleanSolution> reducedSample = new ArrayList<BooleanSolution>();
+        Set<Interaction> finalInteractions = getFinalInteractions(sample, t);
 
-		for (BooleanSolution config : reducedSample) {
-			List<Integer> configAsList = new ArrayList<>();
-			{
-				for (int n : config.get()) {
-					configAsList.add(n);
-				}
-			}
+        int uniqueInteractions = 0;
+        for (Interaction inter : finalInteractions) {
+            if (inter.getCounter() == 1) {
+            	boolean foundConfigurationWithUniqueInteraction = true;
+                for (int i = 0; i < sample.size(); i++) {
+                    BooleanSolution config = sample.get(i);
+                    for(int j = 0; j < t; j++) {
+                    	if ((config.get(Math.abs(inter.getContainedFeatures().get(0)) - 1)
+                                == inter.getContainedFeatures().get(0))) {
+                    		continue;
+                    	} else {
+                    		foundConfigurationWithUniqueInteraction = false;
+                    		break;
+                    	}
+                    }
+                    if(foundConfigurationWithUniqueInteraction) {
+                    	reducedSample.add(config);
+                    	sample.remove(config);
+                    	uniqueInteractions++;
+                    	break;
+                    }
+                }
+            }
+        }
 
-			for (Iterator<Interaction> iterator = finalInteractions.iterator(); iterator.hasNext();) {
-				Interaction inter = iterator.next();
-				if (configAsList.containsAll(inter.getContainedFeatures())) {
-					iterator.remove();
-				}
-			}
-		}
+        for (BooleanSolution config : reducedSample) {
+            List<Integer> configAsList = new ArrayList<>();
+            {
+                for (int n : config.get()) {
+                    configAsList.add(n);
+                }
+            }
 
-		BooleanSolution bestConfig = new BooleanSolution();
+            for (Iterator<Interaction> iterator = finalInteractions.iterator(); iterator.hasNext(); ) {
+                Interaction inter = iterator.next();
+                if (configAsList.containsAll(inter.getContainedFeatures())) {
+                    iterator.remove();
+                }
+            }
+        }
 
-		Set<BooleanSolution> sampleSingle = new HashSet<>(sample);
-		List<BooleanSolution> fieldConfigurations = new ArrayList<>(sampleSingle);
+        BooleanSolution bestConfig = new BooleanSolution();
 
-		Map<BooleanSolution, Double> configsWithScore = new HashMap<>();
-		for (BooleanSolution config : sample) {
-			configsWithScore.put(config, 0.0);
-		}
+        Set<BooleanSolution> sampleSingle = new HashSet<>(sample);
+        List<BooleanSolution> fieldConfigurations = new ArrayList<>(sampleSingle);
 
-		// walk through all configs and give them a score and find the best scored
-		// config
-		for (BooleanSolution config : fieldConfigurations) {
-			List<Integer> configAsList = new ArrayList<>();
-			{
-				for (int n : config.get()) {
-					configAsList.add(n);
-				}
-			}
+        Map<BooleanSolution, Double> configsWithScore = new HashMap<>();
+        for (BooleanSolution config : sample) {
+            configsWithScore.put(config, 0.0);
+        }
 
-			for (Interaction inter : finalInteractions) {
-				if (configAsList.containsAll(inter.getContainedFeatures())) {
-					configsWithScore.replace(config,
-							configsWithScore.get(config) + (1.0 / (double) inter.getCounter()));
-				}
-			}
-		}
+        // walk through all configs and give them a score and find the best scored
+        // config
+        for (BooleanSolution config : fieldConfigurations) {
+            List<Integer> configAsList = new ArrayList<>();
+            {
+                for (int n : config.get()) {
+                    configAsList.add(n);
+                }
+            }
 
-		while (!finalInteractions.isEmpty()) {
-			double bestScore = 0.0;
-			for (BooleanSolution calculatedConfig : fieldConfigurations) {
-				if (configsWithScore.get(calculatedConfig) > bestScore) {
-					bestScore = configsWithScore.get(calculatedConfig);
-					bestConfig = calculatedConfig;
-				}
-			}
+            for (Interaction inter : finalInteractions) {
+                if (configAsList.containsAll(inter.getContainedFeatures())) {
+                    configsWithScore.replace(
+                            config, configsWithScore.get(config) + (1.0 / (double) inter.getCounter()));
+                }
+            }
+        }
 
-			// add best config to reduced sample and remove it from unchecked configs
-			reducedSample.add(bestConfig);
-			fieldConfigurations.remove(bestConfig);
-			configsWithScore.remove(bestConfig);
+        while (!finalInteractions.isEmpty()) {
+            double bestScore = 0.0;
+            for (BooleanSolution calculatedConfig : fieldConfigurations) {
+                if (configsWithScore.get(calculatedConfig) > bestScore) {
+                    bestScore = configsWithScore.get(calculatedConfig);
+                    bestConfig = calculatedConfig;
+                }
+            }
 
-			// remove interactions that are now covered from the interations that still need
-			// to be covered
-			List<Integer> configAsList = new ArrayList<>();
-			{
-				for (int n : bestConfig.get()) {
-					configAsList.add(n);
-				}
-			}
+            // add best config to reduced sample and remove it from unchecked configs
+            reducedSample.add(bestConfig);
+            fieldConfigurations.remove(bestConfig);
+            configsWithScore.remove(bestConfig);
 
-			List<Interaction> coveredInterations = new ArrayList<>();
+            // remove interactions that are now covered from the interations that still need
+            // to be covered
+            List<Integer> configAsList = new ArrayList<>();
+            {
+                for (int n : bestConfig.get()) {
+                    configAsList.add(n);
+                }
+            }
 
-			for (Iterator<Interaction> iterator = finalInteractions.iterator(); iterator.hasNext();) {
-				Interaction inter = iterator.next();
-				if (configAsList.containsAll(inter.getContainedFeatures())) {
-					coveredInterations.add(inter);
-					iterator.remove();
-				}
-			}
+            List<Interaction> coveredInterations = new ArrayList<>();
 
-			for (Interaction coveredInteraction : coveredInterations) {
-				for (Iterator<BooleanSolution> iterator = fieldConfigurations.iterator(); iterator.hasNext();) {
-					BooleanSolution config = iterator.next();
-					List<Integer> config2AsList = new ArrayList<>();
-					{
-						for (int n : config.get()) {
-							config2AsList.add(n);
-						}
-					}
+            for (Iterator<Interaction> iterator = finalInteractions.iterator(); iterator.hasNext(); ) {
+                Interaction inter = iterator.next();
+                if (configAsList.containsAll(inter.getContainedFeatures())) {
+                    coveredInterations.add(inter);
+                    iterator.remove();
+                }
+            }
 
-					if (config2AsList.containsAll(coveredInteraction.getContainedFeatures())) {
-						configsWithScore.replace(config,
-								configsWithScore.get(config) - (1.0 / (double) coveredInteraction.getCounter()));
-						if (configsWithScore.get(config) == 0) {
-							configsWithScore.remove(config);
-							iterator.remove();
-						}
-					}
-				}
-			}
-		}
+            for (Interaction coveredInteraction : coveredInterations) {
+                for (Iterator<BooleanSolution> iterator = fieldConfigurations.iterator(); iterator.hasNext(); ) {
+                    BooleanSolution config = iterator.next();
+                    List<Integer> config2AsList = new ArrayList<>();
+                    {
+                        for (int n : config.get()) {
+                            config2AsList.add(n);
+                        }
+                    }
 
-		return reducedSample;
-	}
+                    if (config2AsList.containsAll(coveredInteraction.getContainedFeatures())) {
+                        configsWithScore.replace(
+                                config,
+                                configsWithScore.get(config) - (1.0 / (double) coveredInteraction.getCounter()));
+                        if (configsWithScore.get(config) == 0) {
+                            configsWithScore.remove(config);
+                            iterator.remove();
+                        }
+                    }
+                }
+            }
+        }
 
-	public static void revertReduction(List<BooleanSolution> reducedSample, int t) {
-		for (int i = reducedSample.size() - 1; i > 0; i--) {
-			reducedSample.remove(i);
-			computeCoverage(reducedSample, t);
-		}
-	}
+        return reducedSample;
+    }
 
-	/**
-	 * This method counts how many interactions appear in a given sample
-	 * 
-	 * @param sample
-	 * @param t
-	 * @return the number of interactions in the sample
-	 */
-	private static long computeCoverage(List<BooleanSolution> sample, int t) {
-		return LexicographicIterator.<Void>stream(t, sample.get(0).size() * 2)
-				.map(interaction -> {
-					int[] array = new int[t];
-					for(int i = 0; i < t; i++) {
-						array[t] = interaction.elementIndices[t] > sample.get(0).size() - 1
-								? -(interaction.elementIndices[t] - sample.get(0).size() + 1)
-								: interaction.elementIndices[t] + 1;
-					}
-					return array;
-				}).filter(interaction -> {
-					for (BooleanSolution config : sample) {
-						for(int i = 0; i < t; i++) {
-							if (((interaction[t] < 0 && config.get(-interaction[t] - 1) == interaction[t])
-									|| (interaction[t] > 0 && config.get(interaction[t] - 1) == interaction[t]))) {
-								continue;
-							} else {
-								break;
-							}
-						}
-					}
-					return false;
-				}).count();
-	}
+    public static void revertReduction(List<BooleanSolution> reducedSample, int t) {
+        for (int i = reducedSample.size() - 1; i > 0; i--) {
+            reducedSample.remove(i);
+            computeCoverage(reducedSample, t);
+        }
+    }
 
-	/**
-	 * Method to reduce a given set of configuration to a t-wise sample with a
-	 * random apporach
-	 *
-	 * @param features a map containing features and their indices in which they are
-	 *                 saved in sample
-	 * @param sample   the set of configuration that will be reduced
-	 * @param t
-	 * @return the reduced sample
-	 */
-	public static List<BooleanSolution> reduceRandom(List<BooleanSolution> sample, int t) {
+    /**
+     * This method counts how many interactions appear in a given sample
+     *
+     * @param sample
+     * @param t
+     * @return the number of interactions in the sample
+     */
+    private static long computeCoverage(List<BooleanSolution> sample, int t) {
+        return LexicographicIterator.<Void>stream(t, sample.get(0).size() * 2)
+                .map(interaction -> {
+                    int[] array = new int[t];
+                    for (int i = 0; i < t; i++) {
+                        array[t] = interaction.elementIndices[t] > sample.get(0).size() - 1
+                                ? -(interaction.elementIndices[t]
+                                        - sample.get(0).size()
+                                        + 1)
+                                : interaction.elementIndices[t] + 1;
+                    }
+                    return array;
+                })
+                .filter(interaction -> {
+                	boolean interactionsAppears = true;
+                    for (BooleanSolution config : sample) {
+                        for (int i = 0; i < t; i++) {
+                            if (((interaction[t] < 0 && config.get(-interaction[t] - 1) == interaction[t])
+                                    || (interaction[t] > 0 && config.get(interaction[t] - 1) == interaction[t]))) {
+                                continue;
+                            } else {
+                            	interactionsAppears = false;
+                                break;
+                            }
+                        }
+                    }
+                    return interactionsAppears;
+                })
+                .count();
+    }
 
-		List<BooleanSolution> reducedSample = new ArrayList<BooleanSolution>();
-		Set<Interaction> finalInteractions = getFinalInteractions(sample, t);
-		Set<Interaction> reducedInteractions = new HashSet<>();
+    /**
+     * Method to reduce a given set of configuration to a t-wise sample with a
+     * random apporach
+     *
+     * @param features a map containing features and their indices in which they are
+     *                 saved in sample
+     * @param sample   the set of configuration that will be reduced
+     * @param t
+     * @return the reduced sample
+     */
+    public static List<BooleanSolution> reduceRandom(List<BooleanSolution> sample, int t) {
 
-		for (int i = 0; i < sample.size(); i++) {
-			Set<Interaction> coveredInterations = new HashSet<>();
-			BooleanSolution config = sample.get(i);
-			List<Integer> configAsList = new ArrayList<>();
-			{
-				for (int n : config.get()) {
-					configAsList.add(n);
-				}
-			}
-			for (Iterator<Interaction> iterator = finalInteractions.iterator(); iterator.hasNext();) {
-				Interaction inter = iterator.next();
-				if (configAsList.containsAll(inter.getContainedFeatures())) {
-					coveredInterations.add(inter);
-					iterator.remove();
-				}
-			}
-			boolean newInteractionFound = false;
-			m: for (Interaction inter : coveredInterations) {
-				for (Interaction addedInter : reducedInteractions) {
-					if (addedInter.getContainedFeatures().containsAll(inter.getContainedFeatures())) {
-						continue m;
-					}
-				}
-				newInteractionFound = true;
-				break;
-			}
-			if (newInteractionFound) {
-				reducedSample.add(config);
-				reducedInteractions.addAll(coveredInterations);
-			}
-		}
+        List<BooleanSolution> reducedSample = new ArrayList<BooleanSolution>();
+        Set<Interaction> finalInteractions = getFinalInteractions(sample, t);
+        Set<Interaction> reducedInteractions = new HashSet<>();
 
-		return reducedSample;
-	}
+        for (int i = 0; i < sample.size(); i++) {
+            Set<Interaction> coveredInterations = new HashSet<>();
+            BooleanSolution config = sample.get(i);
+            List<Integer> configAsList = new ArrayList<>();
+            {
+                for (int n : config.get()) {
+                    configAsList.add(n);
+                }
+            }
+            for (Iterator<Interaction> iterator = finalInteractions.iterator(); iterator.hasNext(); ) {
+                Interaction inter = iterator.next();
+                if (configAsList.containsAll(inter.getContainedFeatures())) {
+                    coveredInterations.add(inter);
+                    iterator.remove();
+                }
+            }
+            boolean newInteractionFound = false;
+            m:
+            for (Interaction inter : coveredInterations) {
+                for (Interaction addedInter : reducedInteractions) {
+                    if (addedInter.getContainedFeatures().containsAll(inter.getContainedFeatures())) {
+                        continue m;
+                    }
+                }
+                newInteractionFound = true;
+                break;
+            }
+            if (newInteractionFound) {
+                reducedSample.add(config);
+                reducedInteractions.addAll(coveredInterations);
+            }
+        }
 
-	
-	/**
-	 * This method collects and counts all t-wise interactions of a given sample.
-	 * 
-	 * @param sample the sample for which the interactions should be found
-	 * @param t
-	 * @return the collected interactions
-	 */
-	private static Set<Interaction> getFinalInteractions(List<BooleanSolution> sample, int t) {
-		return LexicographicIterator.<Void>stream(t, sample.get(0).size() * 2).map(interaction -> {
-			int[] array = new int[t];
-			for (int i = 0; i < t; i++) {
-				array[t] = interaction.elementIndices[t] > sample.get(0).size() - 1
-						? -(interaction.elementIndices[t] - sample.get(0).size() + 1)
-						: interaction.elementIndices[t] + 1;
-			}
-			return array;
-		}).map((int[] interaction) -> {
-			List<Integer> interactionList = new ArrayList<>();
-			for (int i = 0; i < t; i++) {
-				interactionList.add(interaction[t]);
-			}
-			Collections.sort(interactionList);
-			return new Interaction(interactionList);
-		}).filter((Interaction interaction) -> {
-			for (BooleanSolution config : sample) {
-				boolean foundInteraction = true;
-				for(int i = 0; i < t; i++) {
-					int feature = interaction.getContainedFeatures().get(t);
-					if (((feature < 0 && config.get(-feature - 1) == feature)
-							|| (feature > 0 && config.get(feature - 1) == feature))) {
-						continue;
-					} else {
-						foundInteraction = false;
-						break;
-					}
-				}
-				if(foundInteraction) {
-					interaction.increaseCounter();
-				}
-			}
-			return interaction.getCounter() > 0;
-		}).collect(Collectors.toSet());
-	}
+        return reducedSample;
+    }
+
+    /**
+     * This method collects and counts all t-wise interactions of a given sample.
+     *
+     * @param sample the sample for which the interactions should be found
+     * @param t
+     * @return the collected interactions
+     */
+    private static Set<Interaction> getFinalInteractions(List<BooleanSolution> sample, int t) {
+        return LexicographicIterator.<Void>stream(t, sample.get(0).size() * 2)
+                .map(interaction -> {
+                    int[] array = new int[t];
+                    for (int i = 0; i < t; i++) {
+                        array[t] = interaction.elementIndices[t] > sample.get(0).size() - 1
+                                ? -(interaction.elementIndices[t]
+                                        - sample.get(0).size()
+                                        + 1)
+                                : interaction.elementIndices[t] + 1;
+                    }
+                    return array;
+                })
+                .map((int[] interaction) -> {
+                    List<Integer> interactionList = new ArrayList<>();
+                    for (int i = 0; i < t; i++) {
+                        interactionList.add(interaction[t]);
+                    }
+                    Collections.sort(interactionList);
+                    return new Interaction(interactionList);
+                })
+                .filter((Interaction interaction) -> {
+                    for (BooleanSolution config : sample) {
+                        boolean foundInteraction = true;
+                        for (int i = 0; i < t; i++) {
+                            int feature = interaction.getContainedFeatures().get(t);
+                            if (((feature < 0 && config.get(-feature - 1) == feature)
+                                    || (feature > 0 && config.get(feature - 1) == feature))) {
+                                continue;
+                            } else {
+                                foundInteraction = false;
+                                break;
+                            }
+                        }
+                        if (foundInteraction) {
+                            interaction.increaseCounter();
+                        }
+                    }
+                    return interaction.getCounter() > 0;
+                })
+                .collect(Collectors.toSet());
+    }
 }
 
 class Interaction {
 
-	private List<Integer> containedFeatures;
-	private int counter = 0;
+    private List<Integer> containedFeatures;
+    private int counter = 0;
 
-	public Interaction(List<Integer> containedFeatures) {
-		this.containedFeatures = containedFeatures;
-	}
+    public Interaction(List<Integer> containedFeatures) {
+        this.containedFeatures = containedFeatures;
+    }
 
-	public void increaseCounter() {
-		this.counter++;
-	}
+    public void increaseCounter() {
+        this.counter++;
+    }
 
-	public int getCounter() {
-		return counter;
-	}
+    public int getCounter() {
+        return counter;
+    }
 
-	public List<Integer> getContainedFeatures() {
-		return containedFeatures;
-	}
+    public List<Integer> getContainedFeatures() {
+        return containedFeatures;
+    }
 }
